@@ -1,7 +1,7 @@
 # TODO
 
-- [ ] 1. Utworzyć Użytkownika tymczasowego, który będzie próbował wykonywać różne czynności
-- [ ] 2. Uaktywnić Cloud Trail za pomocą CloudFormation
+- [x] 1. Utworzyć Użytkownika tymczasowego, który będzie próbował wykonywać różne czynności
+- [x] 2. Uaktywnić Cloud Trail za pomocą CloudFormation
 - [ ] 3. Stworzyć Lamdbe ( tymczasową, która będzie dodawałą i zabierała uprawnienie Administratora )
 - [ ] 4. Stworzyć Program w pytonie, który będzie wyciągał z CloudTrai informacje o czynnościach które próbował wykonać User
 - [ ] 5. Uzupełnić powyższy program o umiejętność generowania szczegółówej listy uprawnień
