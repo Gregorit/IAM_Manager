@@ -1,0 +1,15 @@
+Description: Template contains IAM Users used in project
+
+#################################################
+
+Resources:
+
+  akurow:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: akurow
+
+  test1:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: test1
