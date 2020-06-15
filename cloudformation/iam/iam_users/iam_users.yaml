@@ -9,6 +9,11 @@ Resources:
     Properties:
       UserName: akurow
 
+  gurych:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: gurych
+
   test1:
     Type: AWS::IAM::User
     Properties:
