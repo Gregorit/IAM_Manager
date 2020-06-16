@@ -1,0 +1,29 @@
+Description: Template contains S3 Buckets used in project
+
+#################################################
+
+Resources:
+
+  CloudFormationS3:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: iam-manager-cloudformation-modules
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+        Tags:
+        - Key: Project
+          Value: IAM manager
+        - Key: Category
+          Value: Configuration
+
+#################################################
+
+Outputs:
+
+  CloudFormationS3:
+    Description: S3 bucket for CloudFormation modules
+    Value: !Ref CloudFormationS3
+    Export:
+      Name: !Sub CloudFormationS3

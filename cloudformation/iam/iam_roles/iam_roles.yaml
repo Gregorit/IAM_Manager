@@ -1,0 +1,42 @@
+Description: Template contains IAM Roles used in project
+
+############################# Resources #############################
+
+Resources:
+
+  LambdaIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "LambdaExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: IAMGroupSwitch
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:AddUserToGroup
+                  - iam:RemoveUserFromGroup
+                Resource: '*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+
+############################## Outputs ##############################
+
+Outputs:
+
+  LambdaIAMRole:
+    Description: Lambda IAM Role
+    Value: !Ref LambdaIAMRole
+    Export:
+      Name: !Sub LambdaIAMRole

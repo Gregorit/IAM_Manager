@@ -1,0 +1,51 @@
+Description: Template contains IAM Groups used in project
+
+############################# Resources #############################
+
+Resources: 
+
+  AdministratorIAMGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: administrator
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+
+  AdministratorIAMGroupUsers:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref AdministratorIAMGroup
+      Users:
+        - akurow
+        - gurych
+
+
+  TesterIAMGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: tester
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+  
+  TesterIAMGroupUsers:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref TesterIAMGroup
+      Users:
+        - test1
+
+############################## Outputs ##############################
+
+Outputs:
+
+  AdministratorIAMGroup:
+    Description: Administrator IAM Group
+    Value: !Ref AdministratorIAMGroup
+    Export:
+      Name: !Sub AdministratorIAMGroup
+
+  TesterIAMGroup:
+    Description: Tester IAM Group
+    Value: !Ref TesterIAMGroup
+    Export:
+      Name: !Sub TesterIAMGroup
