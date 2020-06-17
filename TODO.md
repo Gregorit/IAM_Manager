@@ -14,4 +14,5 @@ Napisać CDK które tworzy :
 - [ ] 3. Stu Lambdy #2
 - [ ] 4. Api GW do tych lambd
 - [ ] 5. Podłączyć CloudTrail do Atheny ( czyli moze najpierw utworzyć Lake Formation)
+- [ ] 6. CDK ma najpierw sprawdzić czy cloudtrail jest włączony, jeśli nei to go uruchomic za pomocą BOTO
 
