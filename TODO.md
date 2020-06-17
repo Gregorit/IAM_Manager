@@ -13,4 +13,5 @@ Napisać CDK które tworzy :
 - [ ] 2. Stub Lambdy #1
 - [ ] 3. Stu Lambdy #2
 - [ ] 4. Api GW do tych lambd
-- [ ] 5. 
+- [ ] 5. Podłączyć CloudTrail do Atheny ( czyli moze najpierw utworzyć Lake Formation)
+
