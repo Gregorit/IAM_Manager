@@ -1,6 +1,6 @@
 from aws_cdk import (
     core,
-    aws_apigateway as gw,
+    aws_apigateway as agw,
     aws_lambda as lambda_
 )
 
@@ -15,5 +15,14 @@ class IamManagerStack(core.Stack):
             code =  lambda_.Code.from_asset("lambdas/switcher"),
             handler = "main.handler",
         )
+
+        api = agw.RestApi(self, "widgets-api",
+            rest_api_name="Widget Service",
+            description="This service serves widgets.")
+
+        get_widgets_integration = agw.LambdaIntegration(role_changer,
+                request_templates={"application/json": '{ "statusCode": "200" }'})
+
+        api.root.add_method("GET", get_widgets_integration) 
 
         # The code that defines your stack goes here
