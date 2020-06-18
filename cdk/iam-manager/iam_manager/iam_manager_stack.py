@@ -1,7 +1,8 @@
 from aws_cdk import (
     core,
     aws_apigateway as agw,
-    aws_lambda as lambda_
+    aws_lambda as lambda_,
+    aws_cloudtrail as cloudtrail
 )
 
 
@@ -25,4 +26,8 @@ class IamManagerStack(core.Stack):
 
         api.root.add_method("GET", get_widgets_integration) 
 
-        # The code that defines your stack goes here
+        # CloudTrail 
+        tail = cloudtrail.Trail(self,'CloudTrail')
+
+
+

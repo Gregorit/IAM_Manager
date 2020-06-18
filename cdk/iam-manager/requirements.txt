@@ -1,4 +1,6 @@
 -e .
 aws-cdk.aws-lambda
 aws-cdk.aws-apigateway
+aws-cdk.aws-s3
+aws-cdk.aws-cloudtrail
 
