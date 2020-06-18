@@ -2,7 +2,8 @@ from aws_cdk import (
     core,
     aws_apigateway as agw,
     aws_lambda as lambda_,
-    aws_cloudtrail as cloudtrail
+    aws_cloudtrail as cloudtrail,
+    aws_glue as glue
 )
 
 
@@ -28,6 +29,9 @@ class IamManagerStack(core.Stack):
 
         # CloudTrail 
         tail = cloudtrail.Trail(self,'CloudTrail')
+
+        db = glue.Database(self,'cloudtrail',database_name='cloudtrail')
+        
 
 
 
