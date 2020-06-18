@@ -9,8 +9,8 @@
 - [ ] 7. Zapisać w bazie szkielet uprawnieć i zrobic z niego IAM Policy. (albo policies)
 
 Napisać CDK które tworzy :
-- [ ] 1. Code Build, który tworzy infrastruktórę
-- [ ] 2. Stub Lambdy #1
+- [x] 1. Code Build, który tworzy infrastruktórę
+- [x] 2. Stub Lambdy #1
 - [ ] 3. Stu Lambdy #2
-- [ ] 4. Api GW do tych lambd
+- [x] 4. Api GW do tych lambd
 - [ ] 5. 
