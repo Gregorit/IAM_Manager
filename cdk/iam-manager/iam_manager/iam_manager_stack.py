@@ -4,7 +4,8 @@ from aws_cdk import (
     aws_lambda as lambda_,
     aws_cloudtrail as cloudtrail,
     aws_glue as glue,
-    aws_athena as athena
+    aws_athena as athena,
+    aws_s3 as s3
 )
 
 
@@ -29,11 +30,13 @@ class IamManagerStack(core.Stack):
         api.root.add_method("GET", get_widgets_integration) 
 
         # CloudTrail 
-        tail = cloudtrail.Trail(self,'CloudTrail')
+        bucket = s3.Bucket(self,'TrailBucket')
+        tail = cloudtrail.Trail(self,'CloudTrail',bucket=bucket)
+
         db_name = 'cloudtrail'
         db = glue.Database(self,'cloudtrail',database_name=db_name)
 
-        query = """
+        query = f"""
         CREATE EXTERNAL TABLE cloudtrail_logs (
 eventversion STRING,
 useridentity STRUCT<
@@ -82,7 +85,7 @@ vpcendpointid STRING
 ROW FORMAT SERDE 'com.amazon.emr.hive.serde.CloudTrailSerde'
 STORED AS INPUTFORMAT 'com.amazon.emr.cloudtrail.CloudTrailInputFormat'
 OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
-LOCATION 's3://CloudTrail_bucket_name/AWSLogs/Account_ID/CloudTrail/';  
+LOCATION 's3://{bucket.bucket_name}/AWSLogs/Account_ID/CloudTrail/';  
 """
 
         table = athena.CfnNamedQuery(self,'cloudtrail_table',
