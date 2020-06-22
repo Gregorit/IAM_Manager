@@ -10,5 +10,5 @@ phases:
       - pip3 install -r requirements.txt
   build:
     commands:
-      - cdk deploy --require-approval never
+      - cdk deploy --require-approval never -O out.json
       - python3 post_cdk_deployment.py
