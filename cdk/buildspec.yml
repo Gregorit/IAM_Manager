@@ -11,3 +11,4 @@ phases:
   build:
     commands:
       - cdk deploy --require-approval never
+      - python3 post_cdk_deployment.py
