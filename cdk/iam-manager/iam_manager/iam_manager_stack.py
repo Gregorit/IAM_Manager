@@ -43,7 +43,7 @@ class IamManagerStack(core.Stack):
                 "State":"ENABLED",
                 "WorkGroupConfiguration":{
                     "ResultConfiguration":{
-                        "OutputLocation":f"s3://{bucket.bucket_name}/"
+                        "OutputLocation":f"s3://{bucket.bucket_name}/athena_output/"
                     }
                 }
 
