@@ -2,7 +2,8 @@
 import json
 import configparser
 import boto3
-
+import zipfile
+import os
 
 # Read Config File
 config = configparser.ConfigParser()
@@ -84,3 +85,16 @@ if 'trail_logs' not in table:
         WorkGroup='IAMManagerWorkgroup'
     )
 
+# We must make sure that we have artifacts for CodePipeline
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file))
+# Zip it
+zipf = zipfile.ZipFile('pipeline.zip', 'w', zipfile.ZIP_DEFLATED)
+zipdir('../../cp_parser', zipf)
+zipf.close()
+# Send it to bucket
+s3 = boto3.client('s3')
+s3.upload_file('pipeline.zip',array['iam-manager']['BucketName'],'pipeline/learner.zip')
