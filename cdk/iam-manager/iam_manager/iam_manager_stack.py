@@ -5,8 +5,12 @@ from aws_cdk import (
     aws_cloudtrail as cloudtrail,
     aws_glue as glue,
     aws_athena as athena,
-    aws_s3 as s3
+    aws_s3 as s3,
+    aws_route53 as route53,
+    aws_certificatemanager as certmanager,
+    aws_cloudfront  as cloudfront
 )
+# from static_website import StaticWebsite
 
 
 class IamManagerStack(core.Stack):
@@ -14,20 +18,44 @@ class IamManagerStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        role_changer = lambda_.Function(self,"RoleChanger",
+        changer = lambda_.Function(self,"Changer",
             runtime = lambda_.Runtime.PYTHON_3_8,
-            code =  lambda_.Code.from_asset("lambdas/switcher"),
+            code =  lambda_.Code.from_asset("lambdas/changer"),
             handler = "main.handler",
         )
 
-        api = agw.RestApi(self, "widgets-api",
-            rest_api_name="Widget Service",
-            description="This service serves widgets.")
+        frontend = lambda_.Function(self,"Frontend",
+            runtime = lambda_.Runtime.PYTHON_3_8,
+            code =  lambda_.Code.from_asset("lambdas/frontend"),
+            handler = "main.handler",
+ 
+        )
+        learner = lambda_.Function(self,"Learner",
+            runtime = lambda_.Runtime.PYTHON_3_8,
+            code =  lambda_.Code.from_asset("lambdas/learner"),
+            handler = "main.handler",
+        )
 
-        get_widgets_integration = agw.LambdaIntegration(role_changer,
+        api = agw.RestApi(self, "learner-api",
+            rest_api_name="Learner Service",
+            description="System to learn roles")
+
+        get_switcher_integration = agw.LambdaIntegration(switcher,
                 request_templates={"application/json": '{ "statusCode": "200" }'})
 
-        api.root.add_method("GET", get_widgets_integration) 
+        get_frontend_integration = agw.LambdaIntegration(frontend,
+                request_templates={"application/json": '{ "statusCode": "200" }'})
+        
+        get_learner_integration = agw.LambdaIntegration(learner,
+                request_templates={"application/json": '{ "statusCode": "200" }'})
+
+        api.root.add_method("GET", get_frontend_integration) 
+        
+        switch = api.root.add_resource('switch')
+        switch.add_method("GET",get_switcher_integration)
+
+        learn = api.root.add_resource('learn')
+        learn.add_method("GET",get_learner_integration)
 
         # CloudTrail 
         bucket = s3.Bucket(self,'TrailBucket')
@@ -49,6 +77,28 @@ class IamManagerStack(core.Stack):
 
             }
             )
+
+        # Static Website
+        domain_name = "grzes.darevee.pl"
+        zone = route53.PublicHostedZone(self,'GrzesDomain',
+            zone_name = domain_name
+        )
+
+                # Content bucket
+        site_bucket = s3.Bucket(self, "SiteBucket",
+                                    website_index_document="index.html",
+                                    website_error_document="404.html",
+                                    public_read_access=True,
+                                    removal_policy=core.RemovalPolicy.DESTROY)
+        cert = certmanager.DnsValidatedCertificate(self, "PublicBucketCert", domain_name=domain_name, hosted_zone=zone)
+        
+        # StaticWebsite(self, "serverlesslink-website",
+        #                       hosted_zone=zone,
+        #                       site_domain="grzes.darevee.pl",
+        #                       sources="../public",
+        #                       website_error="404.html")
+
+
         core.CfnOutput(self,'BucketName',value=bucket.bucket_name)
 
 

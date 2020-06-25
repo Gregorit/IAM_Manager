@@ -2,7 +2,10 @@
 aws-cdk.aws-lambda
 aws-cdk.aws-apigateway
 aws-cdk.aws-s3
+aws-cdk.aws-cloudfront 
 aws-cdk.aws-glue
 aws-cdk.aws-cloudtrail
 aws-cdk.aws-athena
-
+cdk-static-website
+aws-cdk.aws-route53
+aws-cdk.aws-certificatemanager

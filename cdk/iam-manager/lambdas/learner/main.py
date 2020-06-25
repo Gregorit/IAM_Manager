@@ -4,5 +4,5 @@ def handler(event, context):
             'headers': {
                 'Content-Type': 'text/plain'
             },
-            'body': 'Switcher !.'
+            'body': 'Learner !.'
     }
