@@ -18,9 +18,14 @@ class IamManagerStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        changer = lambda_.Function(self,"Changer",
+        api = agw.RestApi(self, "learner-api",
+            rest_api_name="Learner Service",
+            description="System to learn roles")    
+        
+        
+        switcher = lambda_.Function(self,"Switcher",
             runtime = lambda_.Runtime.PYTHON_3_8,
-            code =  lambda_.Code.from_asset("lambdas/changer"),
+            code =  lambda_.Code.from_asset("lambdas/switcher"),
             handler = "main.handler",
         )
 
@@ -36,9 +41,6 @@ class IamManagerStack(core.Stack):
             handler = "main.handler",
         )
 
-        api = agw.RestApi(self, "learner-api",
-            rest_api_name="Learner Service",
-            description="System to learn roles")
 
         get_switcher_integration = agw.LambdaIntegration(switcher,
                 request_templates={"application/json": '{ "statusCode": "200" }'})
