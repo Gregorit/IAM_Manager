@@ -65,7 +65,9 @@ class IamManagerStack(core.Stack):
         learn.add_method("GET",get_learner_integration)
 
         # CloudTrail 
-        bucket = s3.Bucket(self,'TrailBucket')
+        bucket = s3.Bucket(self,'TrailBucket',
+            versioned = True
+        )
         tail = cloudtrail.Trail(self,'CloudTrail',bucket=bucket)
 
         db_name = 'cloudtrail'
@@ -102,7 +104,7 @@ class IamManagerStack(core.Stack):
 
         # Pipeline for Working on Data
         project = codebuild.PipelineProject(self,'main_pipeline_project',
-            build_spec = codebuild.BuildSpec.from_source_filename('cp_parser/buildspec.yml')
+            build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml')
         )
         project.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess"))
 

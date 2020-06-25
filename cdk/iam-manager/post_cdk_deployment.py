@@ -90,7 +90,11 @@ def zipdir(path, ziph):
     # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
-            ziph.write(os.path.join(root, file))
+            print(f'path={path},file={file}')
+            filepath = os.path.join(root, file)
+            ziph.write(filepath,
+                arcname = filepath.replace(path,'')
+            )
 # Zip it
 zipf = zipfile.ZipFile('pipeline.zip', 'w', zipfile.ZIP_DEFLATED)
 zipdir('../../cp_parser', zipf)
