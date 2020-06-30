@@ -27,6 +27,7 @@ Resources:
                 Action:
                   - iam:AddUserToGroup
                   - iam:RemoveUserFromGroup
+                  - codebuild:StartBuild
                 Resource: '*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSLambdaExecute
