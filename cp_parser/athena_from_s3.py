@@ -52,7 +52,7 @@ def query_results(session, params):
             )
             result_data = response_query_result['ResultSet']
             print("location: ", location)
-            print("data: ", result_data)
+            #print("data: ", result_data)
             return location, result_data
         else:
             time.sleep(1)
