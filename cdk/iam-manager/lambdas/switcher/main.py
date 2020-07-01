@@ -14,7 +14,7 @@ def handler(event, context):
     # Start session and select IAM client
     session = boto3.session.Session()
     iam = session.client('iam')
-    success = False
+    success = True
 
     # Mode switcher
     if learning_mode:
@@ -23,7 +23,6 @@ def handler(event, context):
                 GroupName=learning_group,
                 UserName=username
             )
-            success = True
             print(f"User {username} has been added to {learning_group} group.")
         except:
             print(f"User {username} is already added to {learning_group} group.")
@@ -33,10 +32,25 @@ def handler(event, context):
                 GroupName=learning_group,
                 UserName=username
             )
-            success = True
             print(f"User {username} has been removed from {learning_group} group.")
         except:
             print(f"User {username} is not in {learning_group} group.")
+            success = False
+
+
+    if learning_mode and success:
+        try:
+            print(f"Launching CodeBuild...")
+            codebuild = session.client('codebuild')
+            codebuild.start_build(
+                projectName = "mainpipelineprojectA75A748F-Q84zgcuZfXVF",
+                artifactsOverride={
+                    'type': 'CODEPIPELINE'
+                }
+            )
+        except:
+            print("CodeBuild launching failed!")
+            success = False
 
     
     
