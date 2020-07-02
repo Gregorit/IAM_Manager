@@ -25,13 +25,15 @@ pp(data['Rows'][1]['Data'])
 
 rights = defaultdict(int)
 
-
+ignore_list = ["signin", "tagging", "monitoring"]
 iterate = len(data['Rows'])
 for i in range(1,iterate):
     row = data['Rows'][i]
+    if row['Data'][3]['VarCharValue'].split('.')[0] in ignore_list:
+        continue
 
-    e2 = row['Data'][4]['VarCharValue']
     e1 = row['Data'][3]['VarCharValue'].split('.')[0]
+    e2 = row['Data'][4]['VarCharValue']
     reg = row['Data'][5]['VarCharValue']
     param = row['Data'][10]['VarCharValue']
     acc_id = row['Data'][19]['VarCharValue']
@@ -40,11 +42,14 @@ for i in range(1,iterate):
 
 
 print(f"Single: {rights[1]}\n\n")
-rights_list = [key for key, value in rights.items() if value > 0 and "eu-west-1" in key]
+rights_list = [key for key, value in rights.items() if value > 0]
 pp(rights_list)
 
 with open('generated_policy.json', 'w') as f:
-    data = {"Statement": []}
+    data = {
+        "Version": "2012-10-17",
+        "Statement": []
+        }
 
     services_list = []
     for right in rights_list:
@@ -64,9 +69,15 @@ with open('generated_policy.json', 'w') as f:
         if action not in dest:
             dest.append(action)
         
-        resource = f"{right[0]}:{right[1]}:{right[2]}:{right[3]}:{right[4]}:*"
+        resource = f"{right[0]}:{right[1]}:{right[2]}:::*"
         dest = data['Statement'][services_list.index(right[2])]['Resource']
         if resource not in dest:
             dest.append(resource)
 
-    json.dump(data, f, indent=4)
+    json.dump(data, f)
+
+    # iam = session.client('iam')
+    # iam.create_policy(
+    #     PolicyName = "generated-policy",
+    #     PolicyDocument = str(data)
+    # )
