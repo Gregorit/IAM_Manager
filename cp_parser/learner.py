@@ -45,39 +45,38 @@ print(f"Single: {rights[1]}\n\n")
 rights_list = [key for key, value in rights.items() if value > 0]
 pp(rights_list)
 
-with open('generated_policy.json', 'w') as f:
-    data = {
-        "Version": "2012-10-17",
-        "Statement": []
-        }
 
-    services_list = []
-    for right in rights_list:
-        right = right.split(':')
+generated_policy = {
+    "Version": "2012-10-17",
+    "Statement": []
+    }
 
-        if right[2] not in services_list:
-            services_list.append(right[2])
-            data['Statement'].append({
-                "Effect": "Allow",
-                "Action": [],
-                "Resource": []
-                })
+services_list = []
+for right in rights_list:
+    right = right.split(':')
+
+    if right[2] not in services_list:
+        services_list.append(right[2])
+        generated_policy['Statement'].append({
+            "Effect": "Allow",
+            "Action": [],
+            "Resource": []
+            })
 
 
-        action = f"{right[2]}:{right[5]}"
-        dest = data['Statement'][services_list.index(right[2])]['Action']
-        if action not in dest:
-            dest.append(action)
-        
-        resource = f"{right[0]}:{right[1]}:{right[2]}:::*"
-        dest = data['Statement'][services_list.index(right[2])]['Resource']
-        if resource not in dest:
-            dest.append(resource)
+    action = f"{right[2]}:{right[5]}"
+    dest = generated_policy['Statement'][services_list.index(right[2])]['Action']
+    if action not in dest:
+        dest.append(action)
+    
+    resource = f"{right[0]}:{right[1]}:{right[2]}:::*"
+    dest = generated_policy['Statement'][services_list.index(right[2])]['Resource']
+    if resource not in dest:
+        dest.append(resource)
 
-    json.dump(data, f)
 
-    # iam = session.client('iam')
-    # iam.create_policy(
-    #     PolicyName = "generated-policy",
-    #     PolicyDocument = str(data)
-    # )
+iam = session.client('iam')
+iam.create_policy(
+    PolicyName = "generated-policy",
+    PolicyDocument = json.dumps(generated_policy)
+)
