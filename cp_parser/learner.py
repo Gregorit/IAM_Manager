@@ -7,6 +7,7 @@ import athena_from_s3
 import json
 from collections import defaultdict
 from pprint import pprint as pp
+from botocore.exceptions import ClientError
 
 
 role_user_group_arn = "arn:aws:iam::789552300344:user/akurow"
@@ -78,13 +79,22 @@ for right in rights_list:
 
 
 # Check if policy exists, remove it if yes
-iam = session.client('iam')
 try:
+    iam = session.client('iam')
     iam.create_policy(
         PolicyName = "generated-policy",
         PolicyDocument = json.dumps(generated_policy)
     )
-except iam.exceptions.EntityAlreadyExistsException:
+except ClientError:
+    # Detach policy
+    iam = boto3.resource('iam')
+    group = iam.Group('tester')
+    group.detach_policy(
+        PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+    )
+
+    # Remove old policy and add new one
+    iam = session.client('iam')
     iam.delete_policy(
         PolicyArn=f"{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy"
     )
@@ -96,6 +106,6 @@ except iam.exceptions.EntityAlreadyExistsException:
 # Attach policy to role
 iam = boto3.resource('iam')
 group = iam.Group('tester')
-response = group.attach_policy(
+group.attach_policy(
     PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
 )
