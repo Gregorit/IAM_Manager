@@ -7,4 +7,4 @@ phases:
   build:
     commands:
       - pip install -r requirements.txt
-      - echo "Imma eat that"
+      - echo "Imma eat that $arn !"

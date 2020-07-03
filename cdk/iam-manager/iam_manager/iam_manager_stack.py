@@ -105,7 +105,8 @@ class IamManagerStack(core.Stack):
 
         # Pipeline for Working on Data
         project = codebuild.PipelineProject(self,'main_pipeline_project',
-            build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml')
+            build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
+            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}}
         )
         project.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess"))
 
