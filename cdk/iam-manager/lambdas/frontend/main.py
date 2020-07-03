@@ -38,5 +38,5 @@ def handler(event, context):
             'headers': {
                 'Content-Type': 'text/plain'
             },
-            'body': 'Frontend !.'
+            'body': html_body
     }
