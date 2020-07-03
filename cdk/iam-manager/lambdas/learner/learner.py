@@ -111,3 +111,11 @@ def handler(event, context):
     group.attach_policy(
         PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
     )
+
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/plain'
+        },
+        'body': 'Learner finished with code 0.'
+    }
