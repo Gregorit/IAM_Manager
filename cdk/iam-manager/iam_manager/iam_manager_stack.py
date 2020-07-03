@@ -40,6 +40,7 @@ class IamManagerStack(core.Stack):
             handler = "main.handler",
  
         )
+
         learner = lambda_.Function(self,"Learner",
             runtime = lambda_.Runtime.PYTHON_3_8,
             code =  lambda_.Code.from_asset("lambdas/learner"),

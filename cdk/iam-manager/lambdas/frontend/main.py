@@ -1,3 +1,4 @@
+import os
 
 
 
@@ -9,7 +10,7 @@ def handler(event, context):
 
 <h2>Grant Learning Rights</h2>
 
-<form action="{switcher_call}">
+<form action="switch">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
@@ -20,7 +21,7 @@ def handler(event, context):
 <hr>
 <h2>Learn new access</h2>
 
-<form action="{learner_call}">
+<form action="learn">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
@@ -36,7 +37,7 @@ def handler(event, context):
     return {
             'statusCode': 200,
             'headers': {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/html'
             },
             'body': html_body
     }
