@@ -9,7 +9,6 @@ from collections import defaultdict
 from pprint import pprint as pp
 
 
-
 role_user_group_arn = "arn:aws:iam::789552300344:user/akurow"
 
 params = {
@@ -78,10 +77,25 @@ for right in rights_list:
         dest.append(resource)
 
 
-# 1. Check if policy exists, remove it if yes
+# Check if policy exists, remove it if yes
 iam = session.client('iam')
-iam.create_policy(
-    PolicyName = "generated-policy",
-    PolicyDocument = json.dumps(generated_policy)
+try:
+    iam.create_policy(
+        PolicyName = "generated-policy",
+        PolicyDocument = json.dumps(generated_policy)
+    )
+except iam.exceptions.EntityAlreadyExistsException:
+    iam.delete_policy(
+        PolicyArn=f"{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy"
+    )
+    iam.create_policy(
+        PolicyName = "generated-policy",
+        PolicyDocument = json.dumps(generated_policy)
+    )
+
+# Attach policy to role
+iam = boto3.resource('iam')
+group = iam.Group('tester')
+response = group.attach_policy(
+    PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
 )
-# 2. Attach policy to role 
