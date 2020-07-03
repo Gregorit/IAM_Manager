@@ -75,8 +75,10 @@ for right in rights_list:
         dest.append(resource)
 
 
+# 1. Check if policy exists, remove it if yes
 iam = session.client('iam')
 iam.create_policy(
     PolicyName = "generated-policy",
     PolicyDocument = json.dumps(generated_policy)
 )
+# 2. Attach policy to role 
