@@ -57,17 +57,6 @@ def handler(event, context):
         )
         print(f"Policy {learning_policy} has been added to {rolename} role.")
 
-    # else:
-    #     try:
-    #         iam.remove_user_from_group(
-    #             GroupName=learning_group,
-    #             UserName=username
-    #         )
-    #         print(f"User {username} has been removed from {learning_group} group.")
-    #     except:
-    #         print(f"User {username} is not in {learning_group} group.")
-    #         success = False
-
     # CodeBuild launch
     try:
         print(f"Launching CodeBuild...")
