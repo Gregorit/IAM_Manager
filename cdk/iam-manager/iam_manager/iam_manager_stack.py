@@ -104,31 +104,39 @@ class IamManagerStack(core.Stack):
         
 
         # Pipeline for Working on Data
-        project = codebuild.PipelineProject(self,'main_pipeline_project',
+        project = codebuild.Project(self, 'learner_build',
             build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
-            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}}
+            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}},
+            source = codebuild.Source.s3(
+                bucket = bucket,
+                path = 'pipeline/learner.zip'
+            )
         )
-        project.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess"))
+        # project = codebuild.PipelineProject(self,'main_pipeline_project',
+        #     build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
+        #     environment_variables = {'arn':{'value':'Aaaarrrrgh!'}}
+        # )
+        # project.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess"))
 
-        source_output = codepipeline.Artifact()
+        # source_output = codepipeline.Artifact()
 
-        source_action = pipeline_actions.S3SourceAction(
-            action_name = 'S3Source',
-            bucket = bucket,
-            bucket_key = 'pipeline/learner.zip',
-            output = source_output
-        )
+        # source_action = pipeline_actions.S3SourceAction(
+        #     action_name = 'S3Source',
+        #     bucket = bucket,
+        #     bucket_key = 'pipeline/learner.zip',
+        #     output = source_output
+        # )
 
-        build_action = pipeline_actions.CodeBuildAction(
-            action_name = 'CodeBuild',project = project,input = source_output,
+        # build_action = pipeline_actions.CodeBuildAction(
+        #     action_name = 'CodeBuild',project = project,input = source_output,
 
-        )
-        codepipeline.Pipeline(self,'main_pipeline',
-            stages = [
-                {'stageName':  'Source','actions': [source_action]  },
-                {'stageName': 'Build','actions': [build_action]}
-            ]
-        )
+        # )
+        # codepipeline.Pipeline(self,'main_pipeline',
+        #     stages = [
+        #         {'stageName':  'Source','actions': [source_action]  },
+        #         {'stageName': 'Build','actions': [build_action]}
+        #     ]
+        # )
 
         # Outputs
         core.CfnOutput(self,'BucketName',value=bucket.bucket_name)
