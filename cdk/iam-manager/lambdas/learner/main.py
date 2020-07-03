@@ -10,7 +10,8 @@ from pprint import pprint as pp
 from botocore.exceptions import ClientError
 
 
-role_user_group_arn = "arn:aws:iam::789552300344:user/akurow"
+# role_user_group_arn = "arn:aws:iam::789552300344:user/akurow"
+role_user_group_arn = event['queryStringParameters']['arn']
 
 
 def handler(event, context):  
