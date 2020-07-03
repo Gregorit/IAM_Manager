@@ -21,24 +21,42 @@ def handler(event, context):
     # Mode switcher
     if arn_fragments[5] == "user":
         username = arn_fragments[5].strip('/')[1]
-        try:
-            iam.add_user_to_group(
-                GroupName=learning_group,
+
+        users_groups = iam.list_groups_for_user(
+            UserName=username
+        )
+
+        for group in users_groups['Groups']:
+            iam.remove_user_from_group(
+                GroupName=group['GroupName'],
                 UserName=username
             )
-            print(f"User {username} has been added to {learning_group} group.")
-        except:
-            print(f"User {username} is already added to {learning_group} group.")
+
+        iam.add_user_to_group(
+            GroupName=learning_group,
+            UserName=username
+        )
+        print(f"User {username} has been added to {learning_group} group.")
     
     elif arn_fragments[5] == "role":
         rolename = arn_fragments[5].strip('/')[1]
-        try:
-            iam.attach_role_policy(
-                RoleName=rolename,
-                PolicyArn=learning_policy
+        
+        role_policies = iam.list_role_policies(
+            RoleName=rolename
+        )
+        
+        for policy in role_policies['PolicyNames']:
+            iam.remove_user_from_group(
+                GroupName=policy,
+                UserName=rolename
             )
-        except:
-            print(f"Policy {learning_policy} has been added to {rolename} role.")
+        
+        iam.attach_role_policy(
+            RoleName=rolename,
+            PolicyArn=learning_policy
+        )
+        print(f"Policy {learning_policy} has been added to {rolename} role.")
+
     # else:
     #     try:
     #         iam.remove_user_from_group(
