@@ -1,15 +1,9 @@
-
-
-
-def handler(event, context): 
-    switcher_call = "https://xxx"
-    learner_call = "https://yyy"
-    html_body = f"""<html>
+<html>
 <body>
 
 <h2>Grant Learning Rights</h2>
 
-<form action="{switcher_call}">
+<form action="/action_page.php">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
@@ -20,7 +14,7 @@ def handler(event, context):
 <hr>
 <h2>Learn new access</h2>
 
-<form action="{learner_call}">
+<form action="/action_page.php">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
@@ -31,12 +25,3 @@ def handler(event, context):
 
 </body>
 </html>
-"""
-
-    return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/plain'
-            },
-            'body': 'Frontend !.'
-    }
