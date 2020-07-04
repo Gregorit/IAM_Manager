@@ -24,8 +24,6 @@ Resources:
     Type: AWS::IAM::Group
     Properties:
       GroupName: tester
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/ReadOnlyAccess
   
   TesterIAMGroupUsers:
     Type: AWS::IAM::UserToGroupAddition
