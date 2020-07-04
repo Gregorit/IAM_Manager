@@ -45,6 +45,9 @@ class IamManagerStack(core.Stack):
             runtime = lambda_.Runtime.PYTHON_3_8,
             code =  lambda_.Code.from_asset("lambdas/learner"),
             handler = "main.handler",
+            environment = {
+                'codebuild':project.project_name
+            }
         )
 
 
@@ -112,31 +115,7 @@ class IamManagerStack(core.Stack):
                 path = 'pipeline/learner.zip'
             )
         )
-        # project = codebuild.PipelineProject(self,'main_pipeline_project',
-        #     build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
-        #     environment_variables = {'arn':{'value':'Aaaarrrrgh!'}}
-        # )
-        # project.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess"))
-
-        # source_output = codepipeline.Artifact()
-
-        # source_action = pipeline_actions.S3SourceAction(
-        #     action_name = 'S3Source',
-        #     bucket = bucket,
-        #     bucket_key = 'pipeline/learner.zip',
-        #     output = source_output
-        # )
-
-        # build_action = pipeline_actions.CodeBuildAction(
-        #     action_name = 'CodeBuild',project = project,input = source_output,
-
-        # )
-        # codepipeline.Pipeline(self,'main_pipeline',
-        #     stages = [
-        #         {'stageName':  'Source','actions': [source_action]  },
-        #         {'stageName': 'Build','actions': [build_action]}
-        #     ]
-        # )
+        
 
         # Outputs
         core.CfnOutput(self,'BucketName',value=bucket.bucket_name)
