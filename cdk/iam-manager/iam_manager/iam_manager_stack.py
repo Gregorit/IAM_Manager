@@ -109,19 +109,19 @@ class IamManagerStack(core.Stack):
 
 
 
-        # Static Website
-        domain_name = "grzes.darevee.pl"
-        zone = route53.PublicHostedZone(self,'GrzesDomain',
-            zone_name = domain_name
-        )
+        # # Static Website
+        # domain_name = "grzes.darevee.pl"
+        # zone = route53.PublicHostedZone(self,'GrzesDomain',
+        #     zone_name = domain_name
+        # )
 
-        # Content bucket
-        site_bucket = s3.Bucket(self, "SiteBucket",
-                                    website_index_document="index.html",
-                                    website_error_document="404.html",
-                                    public_read_access=True,
-                                    removal_policy=core.RemovalPolicy.DESTROY)
-        cert = certmanager.DnsValidatedCertificate(self, "PublicBucketCert", domain_name=domain_name, hosted_zone=zone)
+        # # Content bucket
+        # site_bucket = s3.Bucket(self, "SiteBucket",
+        #                             website_index_document="index.html",
+        #                             website_error_document="404.html",
+        #                             public_read_access=True,
+        #                             removal_policy=core.RemovalPolicy.DESTROY)
+        # cert = certmanager.DnsValidatedCertificate(self, "PublicBucketCert", domain_name=domain_name, hosted_zone=zone)
         
 
 
