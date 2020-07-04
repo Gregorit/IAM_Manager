@@ -10,7 +10,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 account_id=config.get('MAIN','account_id')
-
+db_name = config.get('MAIN','db_name')
 
 with open('out.json') as f:
     array = json.load(f)
@@ -72,7 +72,7 @@ client = boto3.client('athena',region_name=config.get('MAIN','region'))
 
 
 response = client.list_table_metadata(
-    DatabaseName='cloudtrail',
+    DatabaseName=db_name,
     CatalogName ='AwsDataCatalog'
 )
 table = [t['Name'] for t in response['TableMetadataList'] if t['Name'] == 'trail_logs']
@@ -80,7 +80,7 @@ if 'trail_logs' not in table:
     response = client.start_query_execution(
         QueryString=query,
         QueryExecutionContext={
-            'Database': 'cloudtrail'
+            'Database': db_name
         },
         WorkGroup='IAMManagerWorkgroup'
     )

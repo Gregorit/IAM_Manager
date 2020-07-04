@@ -19,7 +19,9 @@ from aws_cdk import (
 
 class IamManagerStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str,region_name: str, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str,
+        region_name: str, db_name: str,
+        **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # CloudTrail 
@@ -28,7 +30,6 @@ class IamManagerStack(core.Stack):
         )
         tail = cloudtrail.Trail(self,'CloudTrail',bucket=bucket)
 
-        db_name = 'cloudtrail'
         db = glue.Database(self,'cloudtrail',database_name=db_name)
 
         awg = core.CfnResource(self,'AthenaWorkGroup',
@@ -48,7 +49,7 @@ class IamManagerStack(core.Stack):
         # Pipeline for Working on Data
         project = codebuild.Project(self, 'learner_build',
             build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
-            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}},
+            environment_variables = {'arn':{'value':'-- Pur ARN Here --'}},
             source = codebuild.Source.s3(
                 bucket = bucket,
                 path = 'pipeline/learner.zip'
