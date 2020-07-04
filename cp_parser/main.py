@@ -17,8 +17,10 @@ import os
 role_user_group_arn = os.environ['arn']
 region_name =  os.environ['region_name']
 
+arn_fragments = role_user_group_arn.split(':')
+name = arn_fragments[5].strip('/')[1]
 
-def handler(event, context):  
+def handler(event, context):
     params = {
         'region' : region_name,
         'database' : 'cloudtrail',
@@ -93,29 +95,83 @@ def handler(event, context):
             PolicyDocument = json.dumps(generated_policy)
         )
     except ClientError:
-        # Detach policy
-        iam = boto3.resource('iam')
-        group = iam.Group('tester')
-        group.detach_policy(
-            PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+        iam = session.client('iam')
+        att_groups = iam.list_entities_for_policy(
+            PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy',
+            EntityFilter='Group'
+        )
+        att_roles = iam.list_entities_for_policy(
+            PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy',
+            EntityFilter='Role'
         )
 
-        # Remove old policy and add new one
+        # Detach policy
+        for group in att_groups['PolicyGroups']:
+            iam = boto3.resource('iam')
+            group = iam.Group(group['GroupName'])
+            group.detach_policy(
+                PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+            )
+        for role in att_roles['PolicyRoles']:
+            iam = boto3.resource('iam')
+            role = iam.Role(role['RoleName'])
+            role.detach_policy(
+                PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+            )
+
+        # Remove old policy
         iam = session.client('iam')
         iam.delete_policy(
             PolicyArn=f"{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy"
         )
+        # Create new policy
         iam.create_policy(
             PolicyName = "generated-policy",
             PolicyDocument = json.dumps(generated_policy)
         )
+    
+    if "user" in arn_fragments[5]:
+        # Remove user from all groups
+        iam = boto3.resource('iam')
+        users_groups = iam.list_groups_for_user(
+            UserName=name
+        )
 
-    # Attach policy to role
-    iam = boto3.resource('iam')
-    group = iam.Group('tester')
-    group.attach_policy(
-        PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
-    )
+        for group in users_groups['Groups']:
+            iam.remove_user_from_group(
+                GroupName=group['GroupName'],
+                UserName=name
+            )
+
+        iam.add_user_to_group(
+            GroupName='tester',
+            UserName=name
+        )
+
+        # Attach policy to group
+        iam = boto3.resource('iam')
+        group = iam.Group('tester')
+        group.attach_policy(
+            PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+        )
+
+    elif "role" in arn_fragments[5]:
+        iam = boto3.resource('iam')
+        role_policies = iam.list_role_policies(
+            RoleName=name
+        )
+        
+        for policy in role_policies['PolicyNames']:
+            iam.remove_user_from_group(
+                GroupName=policy,
+                UserName=name
+            )
+        
+        iam.attach_role_policy(
+            RoleName=name,
+            PolicyArn=f'{right[0]}:{right[1]}:iam::{right[4]}:policy/generated-policy'
+        )
+
 
     return {
         'statusCode': 200,
