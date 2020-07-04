@@ -6,7 +6,7 @@ import time
 
 def query_results(session, params):
     ## Creating the Client for Athena
-    client = boto3.client('athena',region_name='eu-west-1')
+    client = boto3.client('athena',region_name=params['region'])
     
     ## This function executes the query and returns the query execution ID
     response_query_execution_id = client.start_query_execution(

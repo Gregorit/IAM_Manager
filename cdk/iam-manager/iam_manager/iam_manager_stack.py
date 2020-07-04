@@ -19,7 +19,7 @@ from aws_cdk import (
 
 class IamManagerStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str,region_name: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # CloudTrail 
@@ -79,7 +79,8 @@ class IamManagerStack(core.Stack):
             code =  lambda_.Code.from_asset("lambdas/learner"),
             handler = "main.handler",
             environment = {
-                'codebuild':project.project_name
+                'codebuild':project.project_name,
+                'region_name': region_name
             }
         )
         
@@ -107,25 +108,6 @@ class IamManagerStack(core.Stack):
         learn = api.root.add_resource('learn')
         learn.add_method("GET",get_learner_integration)
 
-
-
-        # # Static Website
-        # domain_name = "grzes.darevee.pl"
-        # zone = route53.PublicHostedZone(self,'GrzesDomain',
-        #     zone_name = domain_name
-        # )
-
-        # # Content bucket
-        # site_bucket = s3.Bucket(self, "SiteBucket",
-        #                             website_index_document="index.html",
-        #                             website_error_document="404.html",
-        #                             public_read_access=True,
-        #                             removal_policy=core.RemovalPolicy.DESTROY)
-        # cert = certmanager.DnsValidatedCertificate(self, "PublicBucketCert", domain_name=domain_name, hosted_zone=zone)
-        
-
-
-        
 
         # Outputs
         core.CfnOutput(self,'BucketName',value=bucket.bucket_name)

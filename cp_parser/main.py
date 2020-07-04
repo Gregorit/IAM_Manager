@@ -15,11 +15,12 @@ import os
 
 # role_user_group_arn = event['queryStringParameters']['arn']
 role_user_group_arn = os.environ['arn']
+region_name =  os.environ['region_name']
 
 
 def handler(event, context):  
     params = {
-        'region' : 'eu-west-1',
+        'region' : region_name,
         'database' : 'cloudtrail',
         'bucket' : 'iam-manager-cloudtrails310cd22f2-faslq2t36wt4',
         'path'  : 'athena_out',

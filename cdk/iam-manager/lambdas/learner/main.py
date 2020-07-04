@@ -4,8 +4,9 @@ import boto3
 def handler(event, context): 
   arn = event['queryStringParameters']['arn']
   codebuild_name = os.environ['codebuild']
+  region_name =  os.environ['region_name']
 
-  client = boto3.client('codebuild',region_name='eu-west-1')
+  client = boto3.client('codebuild',region_name=region_name)
 
   response = client.start_build(
       projectName=codebuild_name,
