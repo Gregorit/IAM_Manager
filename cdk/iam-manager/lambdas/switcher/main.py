@@ -19,7 +19,7 @@ def handler(event, context):
     success = True
 
     # Mode switcher
-    if arn_fragments[5] == "user":
+    if "user" in arn_fragments[5]:
         username = arn_fragments[5].strip('/')[1]
 
         users_groups = iam.list_groups_for_user(
@@ -38,7 +38,7 @@ def handler(event, context):
         )
         print(f"User {username} has been added to {learning_group} group.")
     
-    elif arn_fragments[5] == "role":
+    elif "role" in arn_fragments[5]:
         rolename = arn_fragments[5].strip('/')[1]
         
         role_policies = iam.list_role_policies(
@@ -46,20 +46,21 @@ def handler(event, context):
         )
         
         for policy in role_policies['PolicyNames']:
-            iam.remove_user_from_group(
-                GroupName=policy,
-                UserName=rolename
+            iam.detach_role_policy(
+                RoleName=rolename,
+                PolicyArn=f'{arn_fragments[0]}:{arn_fragments[1]}:iam::{arn_fragments[4]}:policy/{policy}'
             )
         
         iam.attach_role_policy(
             RoleName=rolename,
-            PolicyArn=learning_policy
+            PolicyArn=f'{arn_fragments[0]}:{arn_fragments[1]}:iam::{arn_fragments[4]}:policy/{learning_policy}'
         )
         print(f"Policy {learning_policy} has been added to {rolename} role.")
 
     # CodeBuild launch
     try:
         print(f"Launching CodeBuild...")
+        session = boto3.session.Session()
         codebuild = session.client('codebuild')
         codebuild.start_build(
             projectName = "mainpipelineprojectA75A748F-Q84zgcuZfXVF",
