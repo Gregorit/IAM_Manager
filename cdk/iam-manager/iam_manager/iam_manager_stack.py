@@ -22,6 +22,39 @@ class IamManagerStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
+        # CloudTrail 
+        bucket = s3.Bucket(self,'TrailBucket',
+            versioned = True
+        )
+        tail = cloudtrail.Trail(self,'CloudTrail',bucket=bucket)
+
+        db_name = 'cloudtrail'
+        db = glue.Database(self,'cloudtrail',database_name=db_name)
+
+        awg = core.CfnResource(self,'AthenaWorkGroup',
+            type = "AWS::Athena::WorkGroup",
+            properties={
+                "Name" : "IAMManagerWorkgroup",
+                "State":"ENABLED",
+                "WorkGroupConfiguration":{
+                    "ResultConfiguration":{
+                        "OutputLocation":f"s3://{bucket.bucket_name}/athena_output/"
+                    }
+                }
+
+            }
+            )
+
+        # Pipeline for Working on Data
+        project = codebuild.Project(self, 'learner_build',
+            build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
+            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}},
+            source = codebuild.Source.s3(
+                bucket = bucket,
+                path = 'pipeline/learner.zip'
+            )
+        )
+
         # Lambdas and Api GW
         api = agw.RestApi(self, "learner-api",
             rest_api_name="Learner Service",
@@ -49,7 +82,13 @@ class IamManagerStack(core.Stack):
                 'codebuild':project.project_name
             }
         )
+        
+        learner.add_to_role_policy(iam.PolicyStatement(
+            actions = ['codebuild:StartBuild'],
+            resources = [project.project_arn]
 
+        )
+        )
 
         get_switcher_integration = agw.LambdaIntegration(switcher,
                 request_templates={"application/json": '{ "statusCode": "200" }'})
@@ -68,28 +107,7 @@ class IamManagerStack(core.Stack):
         learn = api.root.add_resource('learn')
         learn.add_method("GET",get_learner_integration)
 
-        # CloudTrail 
-        bucket = s3.Bucket(self,'TrailBucket',
-            versioned = True
-        )
-        tail = cloudtrail.Trail(self,'CloudTrail',bucket=bucket)
 
-        db_name = 'cloudtrail'
-        db = glue.Database(self,'cloudtrail',database_name=db_name)
-
-        awg = core.CfnResource(self,'AthenaWorkGroup',
-            type = "AWS::Athena::WorkGroup",
-            properties={
-                "Name" : "IAMManagerWorkgroup",
-                "State":"ENABLED",
-                "WorkGroupConfiguration":{
-                    "ResultConfiguration":{
-                        "OutputLocation":f"s3://{bucket.bucket_name}/athena_output/"
-                    }
-                }
-
-            }
-            )
 
         # Static Website
         domain_name = "grzes.darevee.pl"
@@ -106,15 +124,7 @@ class IamManagerStack(core.Stack):
         cert = certmanager.DnsValidatedCertificate(self, "PublicBucketCert", domain_name=domain_name, hosted_zone=zone)
         
 
-        # Pipeline for Working on Data
-        project = codebuild.Project(self, 'learner_build',
-            build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
-            environment_variables = {'arn':{'value':'Aaaarrrrgh!'}},
-            source = codebuild.Source.s3(
-                bucket = bucket,
-                path = 'pipeline/learner.zip'
-            )
-        )
+
         
 
         # Outputs

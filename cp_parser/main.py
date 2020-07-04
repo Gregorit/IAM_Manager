@@ -8,10 +8,13 @@ import json
 from collections import defaultdict
 from pprint import pprint as pp
 from botocore.exceptions import ClientError
+import os
 
 
 # role_user_group_arn = "arn:aws:iam::789552300344:user/akurow"
-role_user_group_arn = event['queryStringParameters']['arn']
+
+# role_user_group_arn = event['queryStringParameters']['arn']
+role_user_group_arn = os.environ['arn']
 
 
 def handler(event, context):  
