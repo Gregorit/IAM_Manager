@@ -2,9 +2,7 @@ import os
 
 
 
-def handler(event, context): 
-    switcher_call = "https://xxx"
-    learner_call = "https://yyy"
+def handler(event, context):
     html_body = f"""<html>
 <body>
 

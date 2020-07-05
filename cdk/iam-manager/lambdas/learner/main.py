@@ -8,7 +8,7 @@ def handler(event, context):
 
   client = boto3.client('codebuild',region_name=region_name)
 
-  response = client.start_build(
+  client.start_build(
       projectName=codebuild_name,
 
       environmentVariablesOverride=[
