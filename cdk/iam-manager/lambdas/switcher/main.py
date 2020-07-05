@@ -16,7 +16,6 @@ def handler(event, context):
     # Start session and select IAM client
     session = boto3.session.Session()
     iam = session.client('iam')
-    success = True
 
     # Mode switcher
     if "user" in arn_fragments[5]:
@@ -57,35 +56,11 @@ def handler(event, context):
         )
         print(f"Policy {learning_policy} has been added to {rolename} role.")
 
-    # CodeBuild launch
-    try:
-        print(f"Launching CodeBuild...")
-        session = boto3.session.Session()
-        codebuild = session.client('codebuild')
-        codebuild.start_build(
-            projectName = "mainpipelineprojectA75A748F-Q84zgcuZfXVF",
-            artifactsOverride={
-                'type': 'CODEPIPELINE'
-            }
-        )
-    except:
-        print("CodeBuild launching failed!")
-        success = False
 
-
-    if success:
-        return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/plain'
-            },
-            'body': 'Lambda finished with code 0.'
-        }
-    else:
-        return {
-            'statusCode': 500,
-            'headers': {
-                'Content-Type': 'text/plain'
-            },
-            'body': 'Lambda finished with code 1.'
-        }
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/plain'
+        },
+        'body': 'Lambda finished with code 0.'
+    }
