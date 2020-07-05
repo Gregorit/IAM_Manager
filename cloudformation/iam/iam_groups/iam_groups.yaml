@@ -24,13 +24,6 @@ Resources:
     Type: AWS::IAM::Group
     Properties:
       GroupName: tester
-  
-  TesterIAMGroupUsers:
-    Type: AWS::IAM::UserToGroupAddition
-    Properties:
-      GroupName: !Ref TesterIAMGroup
-      Users:
-        - test1
 
 ############################## Outputs ##############################
 
