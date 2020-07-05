@@ -20,7 +20,7 @@ region_name =  os.environ['region_name']
 arn_fragments = role_user_group_arn.split(':')
 name = arn_fragments[5].strip('/')[1]
 
-def handler(event, context):
+def handler():
     params = {
         'region' : region_name,
         'database' : 'cloudtrail',
@@ -180,3 +180,5 @@ def handler(event, context):
         },
         'body': 'Learner finished with code 0.'
     }
+
+handler()
