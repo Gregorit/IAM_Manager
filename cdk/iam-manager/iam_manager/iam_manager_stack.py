@@ -35,7 +35,7 @@ class IamManagerStack(core.Stack):
         awg = core.CfnResource(self,'AthenaWorkGroup',
             type = "AWS::Athena::WorkGroup",
             properties={
-                "Name" : "IAMManagerWorkgroup",
+                "Name" : f"{db_name}",
                 "State":"ENABLED",
                 "WorkGroupConfiguration":{
                     "ResultConfiguration":{
@@ -49,7 +49,10 @@ class IamManagerStack(core.Stack):
         # Pipeline for Working on Data
         project = codebuild.Project(self, 'learner_build',
             build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
-            environment_variables = {'arn':{'value':'-- Pur ARN Here --'}},
+            environment_variables = {
+                'arn':{'value':'-- Pur ARN Here --'},
+                'athena_database' : {'value':'db_name'}
+            },
             source = codebuild.Source.s3(
                 bucket = bucket,
                 path = 'pipeline/learner.zip'
@@ -66,7 +69,15 @@ class IamManagerStack(core.Stack):
             runtime = lambda_.Runtime.PYTHON_3_8,
             code =  lambda_.Code.from_asset("lambdas/switcher"),
             handler = "main.handler",
+            
         )
+        switcher.add_to_role_policy(iam.PolicyStatement(
+            actions = ['iam:*'],
+            resources = ['*']
+
+        )
+        )
+
 
         frontend = lambda_.Function(self,"Frontend",
             runtime = lambda_.Runtime.PYTHON_3_8,

@@ -8,7 +8,7 @@ def handler(event, context):
 
 <h2>Grant Learning Rights</h2>
 
-<form action="switch">
+<form action="prod/switch">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
@@ -19,7 +19,7 @@ def handler(event, context):
 <hr>
 <h2>Learn new access</h2>
 
-<form action="learn">
+<form action="prod/learn">
   <label for="fname">Role/User ARN:</label><br>
   <input type="text" id="arn" name="arn" value=""><br><br>
 
