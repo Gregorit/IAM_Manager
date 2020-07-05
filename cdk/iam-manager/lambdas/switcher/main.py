@@ -21,15 +21,18 @@ def handler(event, context):
     if "user" in arn_fragments[5]:
         username = arn_fragments[5].strip('/')[1]
 
-        users_groups = iam.list_groups_for_user(
-            UserName=username
-        )
-
-        for group in users_groups['Groups']:
-            iam.remove_user_from_group(
-                GroupName=group['GroupName'],
+        try:
+            users_groups = iam.list_groups_for_user(
                 UserName=username
             )
+
+            for group in users_groups['Groups']:
+                iam.remove_user_from_group(
+                    GroupName=group['GroupName'],
+                    UserName=username
+                )
+        except iam.exceptions.NoSuchEntityException:
+            pass
 
         iam.add_user_to_group(
             GroupName=learning_group,
@@ -40,15 +43,18 @@ def handler(event, context):
     elif "role" in arn_fragments[5]:
         rolename = arn_fragments[5].strip('/')[1]
         
-        role_policies = iam.list_role_policies(
-            RoleName=rolename
-        )
-        
-        for policy in role_policies['PolicyNames']:
-            iam.detach_role_policy(
-                RoleName=rolename,
-                PolicyArn=f'{arn_fragments[0]}:{arn_fragments[1]}:iam::{arn_fragments[4]}:policy/{policy}'
+        try:
+            role_policies = iam.list_role_policies(
+                RoleName=rolename
             )
+            
+            for policy in role_policies['PolicyNames']:
+                iam.detach_role_policy(
+                    RoleName=rolename,
+                    PolicyArn=f'{arn_fragments[0]}:{arn_fragments[1]}:iam::{arn_fragments[4]}:policy/{policy}'
+                )
+        except iam.exceptions.NoSuchEntityException:
+            pass
         
         iam.attach_role_policy(
             RoleName=rolename,
