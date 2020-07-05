@@ -5,12 +5,12 @@ import os
 import boto3  # available as default in AWS Lambda
 
 
-role_user_group_arn = event['queryStringParameters']['arn']
 learning_group = 'administrator'
 learning_policy = 'AdministratorAccess'
 
 
 def handler(event, context):
+    role_user_group_arn = event['queryStringParameters']['arn']
     arn_fragments = role_user_group_arn.split(':')
 
     # Start session and select IAM client
