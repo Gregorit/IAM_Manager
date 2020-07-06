@@ -11,6 +11,7 @@ config.read('config.ini')
 
 account_id=config.get('MAIN','account_id')
 db_name = config.get('MAIN','db_name')
+stack_name = config.get('MAIN','stack_name')
 
 with open('out.json') as f:
     array = json.load(f)
@@ -66,7 +67,7 @@ CREATE EXTERNAL TABLE trail_logs (
 ROW FORMAT SERDE 'com.amazon.emr.hive.serde.CloudTrailSerde'
 STORED AS INPUTFORMAT 'com.amazon.emr.cloudtrail.CloudTrailInputFormat'
 OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
-LOCATION 's3://{array['iam-manager']['BucketName']}/AWSLogs/{account_id}/CloudTrail/';  
+LOCATION 's3://{array[stack_name]['BucketName']}/AWSLogs/{account_id}/CloudTrail/';  
 """
 client = boto3.client('athena',region_name=config.get('MAIN','region'))
 
@@ -101,4 +102,4 @@ zipdir('../../cp_parser', zipf)
 zipf.close()
 # Send it to bucket
 s3 = boto3.client('s3')
-s3.upload_file('pipeline.zip',array['iam-manager']['BucketName'],'pipeline/learner.zip')
+s3.upload_file('pipeline.zip',array[stack_name]['BucketName'],'pipeline/learner.zip')
