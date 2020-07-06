@@ -51,7 +51,7 @@ class IamManagerStack(core.Stack):
             build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
             environment_variables = {
                 'arn':{'value':'-- Pur ARN Here --'},
-                'athena_database' : {'value':'db_name'},
+                'athena_database' : {'value':db_name},
                 'region_name': {'value':region_name},
                 'bucket':{'value':bucket.bucket_name}
             },
