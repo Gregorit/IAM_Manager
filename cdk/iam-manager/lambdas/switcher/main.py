@@ -19,7 +19,7 @@ def handler(event, context):
 
     # Mode switcher
     if "user" in arn_fragments[5]:
-        username = arn_fragments[5].strip('/')[1]
+        username = arn_fragments[5].split('/')[1]
 
         try:
             users_groups = iam.list_groups_for_user(
@@ -41,7 +41,7 @@ def handler(event, context):
         print(f"User {username} has been added to {learning_group} group.")
     
     elif "role" in arn_fragments[5]:
-        rolename = arn_fragments[5].strip('/')[1]
+        rolename = arn_fragments[5].split('/')[1]
         
         try:
             role_policies = iam.list_role_policies(
