@@ -17,6 +17,7 @@ import os
 role_user_group_arn = os.environ['arn']
 region_name =  os.environ['region_name']
 athena_database = os.environ['athena_database']
+bucket = os.environ['bucket']
 
 arn_fragments = role_user_group_arn.split(':')
 name = arn_fragments[5].strip('/')[1]
@@ -25,7 +26,7 @@ def handler():
     params = {
         'region' : region_name,
         'database' : athena_database,
-        'bucket' : 'iam-manager-cloudtrails310cd22f2-faslq2t36wt4',
+        'bucket' : bucket,
         'path'  : 'athena_out',
         'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn"  = \'{role_user_group_arn}\''
         }

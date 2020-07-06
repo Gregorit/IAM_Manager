@@ -52,7 +52,8 @@ class IamManagerStack(core.Stack):
             environment_variables = {
                 'arn':{'value':'-- Pur ARN Here --'},
                 'athena_database' : {'value':'db_name'},
-                'region_name': {'value':region_name}
+                'region_name': {'value':region_name},
+                'bucket':{'value':bucket.bucket_name}
             },
             source = codebuild.Source.s3(
                 bucket = bucket,
