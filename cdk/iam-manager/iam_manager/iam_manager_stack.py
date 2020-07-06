@@ -51,12 +51,26 @@ class IamManagerStack(core.Stack):
             build_spec = codebuild.BuildSpec.from_source_filename('buildspec.yml'),
             environment_variables = {
                 'arn':{'value':'-- Pur ARN Here --'},
-                'athena_database' : {'value':'db_name'}
+                'athena_database' : {'value':'db_name'},
+                'region_name': {'value':region_name}
             },
             source = codebuild.Source.s3(
                 bucket = bucket,
                 path = 'pipeline/learner.zip'
             )
+        )
+        project.add_to_role_policy(iam.PolicyStatement(
+            actions = ['athena:*'],
+            resources = ['*']
+
+        )
+        )
+
+        project.add_to_role_policy(iam.PolicyStatement(
+            actions = ['iam:*'],
+            resources = ['*']
+
+        )
         )
 
         # Lambdas and Api GW
