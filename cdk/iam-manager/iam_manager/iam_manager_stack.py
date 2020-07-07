@@ -7,12 +7,7 @@ from aws_cdk import (
     aws_athena as athena,
     aws_s3 as s3,
     aws_iam as iam,
-    aws_route53 as route53,
-    aws_certificatemanager as certmanager,
-    aws_cloudfront  as cloudfront,
-    aws_codepipeline as codepipeline,
-    aws_codebuild as codebuild,
-    aws_codepipeline_actions as pipeline_actions
+    aws_codebuild as codebuild
 )
 # from static_website import StaticWebsite
 
