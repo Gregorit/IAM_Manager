@@ -74,6 +74,13 @@ class IamManagerStack(core.Stack):
             )
         )
 
+        project.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['s3:*'],
+                resources = ['*']
+            )
+        )
+
         # Lambdas and Api GW
         api = agw.RestApi(self, "learner-api",
             rest_api_name="Learner Service",
