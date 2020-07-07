@@ -60,18 +60,25 @@ class IamManagerStack(core.Stack):
                 path = 'pipeline/learner.zip'
             )
         )
-        project.add_to_role_policy(iam.PolicyStatement(
-            actions = ['athena:*'],
-            resources = ['*']
-
+        project.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['athena:*'],
+                resources = ['*']
+            )
         )
+
+        project.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['iam:*'],
+                resources = ['*']
+            )
         )
 
-        project.add_to_role_policy(iam.PolicyStatement(
-            actions = ['iam:*'],
-            resources = ['*']
-
-        )
+        project.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['glue:*'],
+                resources = ['*']
+            )
         )
 
         # Lambdas and Api GW
