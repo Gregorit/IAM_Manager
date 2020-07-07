@@ -20,7 +20,7 @@ athena_database = os.environ['athena_database']
 bucket = os.environ['bucket']
 
 arn_fragments = role_user_group_arn.split(':')
-name = arn_fragments[5].strip('/')[1]
+name = arn_fragments[5].split('/')[1]
 
 def handler():
     print("External variables:"
