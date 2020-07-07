@@ -9,7 +9,6 @@ from aws_cdk import (
     aws_iam as iam,
     aws_codebuild as codebuild
 )
-# from static_website import StaticWebsite
 
 
 class IamManagerStack(core.Stack):
@@ -37,9 +36,8 @@ class IamManagerStack(core.Stack):
                         "OutputLocation":f"s3://{bucket.bucket_name}/athena_output/"
                     }
                 }
-
             }
-            )
+        )
 
         # Pipeline for Working on Data
         project = codebuild.Project(self, 'learner_build',
@@ -79,20 +77,19 @@ class IamManagerStack(core.Stack):
         # Lambdas and Api GW
         api = agw.RestApi(self, "learner-api",
             rest_api_name="Learner Service",
-            description="System to learn roles")    
-        
+            description="System to learn roles"
+        )    
         
         switcher = lambda_.Function(self,"Switcher",
             runtime = lambda_.Runtime.PYTHON_3_8,
             code =  lambda_.Code.from_asset("lambdas/switcher"),
             handler = "main.handler",
-            
         )
-        switcher.add_to_role_policy(iam.PolicyStatement(
-            actions = ['iam:*'],
-            resources = ['*']
-
-        )
+        switcher.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['iam:*'],
+                resources = ['*']
+            )
         )
 
 
@@ -100,7 +97,6 @@ class IamManagerStack(core.Stack):
             runtime = lambda_.Runtime.PYTHON_3_8,
             code =  lambda_.Code.from_asset("lambdas/frontend"),
             handler = "main.handler",
- 
         )
 
         learner = lambda_.Function(self,"Learner",
@@ -113,11 +109,11 @@ class IamManagerStack(core.Stack):
             }
         )
         
-        learner.add_to_role_policy(iam.PolicyStatement(
-            actions = ['codebuild:StartBuild'],
-            resources = [project.project_arn]
-
-        )
+        learner.add_to_role_policy(
+            iam.PolicyStatement(
+                actions = ['codebuild:StartBuild'],
+                resources = [project.project_arn]
+            )
         )
 
         get_switcher_integration = agw.LambdaIntegration(switcher,
@@ -140,16 +136,3 @@ class IamManagerStack(core.Stack):
 
         # Outputs
         core.CfnOutput(self,'BucketName',value=bucket.bucket_name)
-
-
-
-
-
-
-
-
-    
-        
-
-
-
