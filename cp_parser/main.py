@@ -142,7 +142,7 @@ def handler():
     
     if "user" in arn_fragments[5]:
         # Remove user from all groups
-        iam = boto3.resource('iam')
+        iam = session.client('iam')
         users_groups = iam.list_groups_for_user(
             UserName=name
         )
@@ -166,7 +166,7 @@ def handler():
         )
 
     elif "role" in arn_fragments[5]:
-        iam = boto3.resource('iam')
+        iam = session.client('iam')
         role_policies = iam.list_role_policies(
             RoleName=name
         )
