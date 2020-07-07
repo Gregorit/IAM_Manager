@@ -43,6 +43,9 @@ def handler():
     session = boto3.session.Session()
     location, data= athena_from_s3.query_results(session, params)
     print("Locations", location)
+    print("Debug data")
+    pp(data)
+
     print("Result Data: ")
     pp(data['Rows'][1]['Data'])
 
