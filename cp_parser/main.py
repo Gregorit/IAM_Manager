@@ -34,7 +34,7 @@ def handler():
         'database' : athena_database,
         'bucket' : bucket,
         'path'  : 'athena_out',
-        'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn"  = \'{role_user_group_arn}\''
+        'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn" = \'arn:aws:iam::789552300344:user/test1\''
         }
     
     pp("Params:")
