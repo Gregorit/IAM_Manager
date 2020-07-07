@@ -23,6 +23,12 @@ arn_fragments = role_user_group_arn.split(':')
 name = arn_fragments[5].strip('/')[1]
 
 def handler():
+    print("External variables:"
+    f"role_user_group_arn: {role_user_group_arn} \n"
+    f"region_name: {region_name}\n"
+    f"athena_database: {athena_database}\n"
+    f"bucket: {bucket}\n\n")
+
     params = {
         'region' : region_name,
         'database' : athena_database,
@@ -30,6 +36,10 @@ def handler():
         'path'  : 'athena_out',
         'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn"  = \'{role_user_group_arn}\''
         }
+    
+    pp("Params:")
+    pp(params)
+    
     session = boto3.session.Session()
     location, data= athena_from_s3.query_results(session, params)
     print("Locations", location)
