@@ -37,14 +37,9 @@ def handler():
         'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn" = \'{role_user_group_arn}\''
         }
     
-    pp("Query:")
-    print(params['query'])
-    
     session = boto3.session.Session()
     location, data= athena_from_s3.query_results(session, params)
     print("Locations", location)
-    print("Debug data")
-    pp(data)
 
     print("Result Data: ")
     pp(data['Rows'][1]['Data'])
