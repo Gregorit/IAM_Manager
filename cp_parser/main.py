@@ -38,7 +38,7 @@ def handler():
         }
     
     pp("Query:")
-    pp(params['query'])
+    printparams['query'])
     
     session = boto3.session.Session()
     location, data= athena_from_s3.query_results(session, params)
