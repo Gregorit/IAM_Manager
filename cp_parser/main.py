@@ -91,10 +91,10 @@ def handler():
         if action not in dest:
             dest.append(action)
         
-        resource = f"{right[0]}:{right[1]}:{right[2]}:::*"
+        # resource = f"{right[0]}:{right[1]}:{right[2]}:::*"
         dest = generated_policy['Statement'][services_list.index(right[2])]['Resource']
         if resource not in dest:
-            dest.append(resource)
+            dest.append("*")
 
 
     # Check if policy exists, remove it if yes
