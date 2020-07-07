@@ -34,11 +34,11 @@ def handler():
         'database' : athena_database,
         'bucket' : bucket,
         'path'  : 'athena_out',
-        'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn" = \'arn:aws:iam::789552300344:user/test1\''
+        'query': f'SELECT * FROM "cloudtrail"."trail_logs" WHERE "useridentity"."arn" = \'{role_user_group_arn}\''
         }
     
-    pp("Params:")
-    pp(params)
+    pp("Query:")
+    pp(params['query'])
     
     session = boto3.session.Session()
     location, data= athena_from_s3.query_results(session, params)
