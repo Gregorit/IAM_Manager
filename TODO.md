@@ -9,10 +9,9 @@
 - [ ] 7. Zapisać w bazie szkielet uprawnieć i zrobic z niego IAM Policy. (albo policies)
 
 Napisać CDK które tworzy :
-- [ ] 1. Code Build, który tworzy infrastruktórę
-- [ ] 2. Stub Lambdy #1
+- [x] 1. Code Build, który tworzy infrastruktórę
+- [x] 2. Stub Lambdy #1
 - [ ] 3. Stu Lambdy #2
 - [ ] 4. Api GW do tych lambd
 - [ ] 5. Podłączyć CloudTrail do Atheny ( czyli moze najpierw utworzyć Lake Formation)
 - [ ] 6. CDK ma najpierw sprawdzić czy cloudtrail jest włączony, jeśli nei to go uruchomic za pomocą BOTO
-
