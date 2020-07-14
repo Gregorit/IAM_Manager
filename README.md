@@ -8,3 +8,4 @@ Idea działania. System ma dwa tryby pracy. Pełnego audytu , gdzie rola/user ma
         * powiadomienie z użyciem SNS
         * odcięcie użytkownika od dostępu do części środowiska
         * redukcja uprawnień na koncie AWS
+Fin,

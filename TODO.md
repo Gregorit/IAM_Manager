@@ -12,5 +12,6 @@ Napisać CDK które tworzy :
 - [x] 1. Code Build, który tworzy infrastruktórę
 - [x] 2. Stub Lambdy #1
 - [ ] 3. Stu Lambdy #2
-- [x] 4. Api GW do tych lambd
-- [ ] 5. 
+- [ ] 4. Api GW do tych lambd
+- [ ] 5. Podłączyć CloudTrail do Atheny ( czyli moze najpierw utworzyć Lake Formation)
+- [ ] 6. CDK ma najpierw sprawdzić czy cloudtrail jest włączony, jeśli nei to go uruchomic za pomocą BOTO
